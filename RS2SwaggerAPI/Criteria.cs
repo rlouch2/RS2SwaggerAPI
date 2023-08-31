@@ -16,7 +16,10 @@ namespace RS2SwaggerAPI
 
         public Criteria(string field, string value, ComparisonOperators comparisonOperator)
         {
-            filter = field + " " + comparisonOperator.ToString() + " " + value;
+            if (comparisonOperator == ComparisonOperators.startswith)
+                filter = comparisonOperator.ToString() + "(" + field + ", " + value + ")";
+            else
+                filter = field + " " + comparisonOperator.ToString() + " " + value;
         }
 
         public string ToQueryString()
@@ -145,6 +148,8 @@ namespace RS2SwaggerAPI
         Ge,
         [Description("Less than or equal to")]
         Le,
+        [Description("Starts with")]
+        startswith,
     }
 
     public enum LogicalOperator

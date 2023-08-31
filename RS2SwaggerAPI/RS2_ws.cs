@@ -85,7 +85,10 @@ namespace RS2SwaggerAPI
 
             results.AddRange(PerformSelect(tableName, "", ReturnAllData, criteria.ToQueryString(), null, out UtensilDataArray));
 
-            return results.ToArray();
+            if (results.Count > 0)
+                return results.ToArray();
+            else
+                return null;
         }
 
         public List<JsonApiObject> SelectList(string tableName, ICriteria criteria = null, bool ReturnAllData = false)
