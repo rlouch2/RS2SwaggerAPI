@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Versioning;
 using System.Text;
 using System.Web;
 
@@ -99,12 +100,22 @@ namespace RS2SwaggerAPI
             List<JsonApiObject> results = new List<JsonApiObject>();
             string UtensilDataArray = "starting array";
 
-            if (criteria != null)
-                results.AddRange(PerformSelect(tableName, "", ReturnAllData, criteria.ToQueryString(), null, out UtensilDataArray));
-            else
-                results.AddRange(PerformSelect(tableName, "", ReturnAllData, "", null, out UtensilDataArray));
+            List<JsonApiObject> range;
 
-            return results;
+            if (criteria != null)
+                range = PerformSelect(tableName, "", ReturnAllData, criteria.ToQueryString(), null, out UtensilDataArray);
+            else
+                range = PerformSelect(tableName, "", ReturnAllData, "", null, out UtensilDataArray);
+
+            if (range != null)
+            {
+                results.AddRange(range);
+                return results;
+            }
+            else
+                return new List<JsonApiObject>();
+
+
         }
 
         //public dynamic[] Select(string tableName, string id, ICriteria criteria = null)
@@ -252,6 +263,23 @@ namespace RS2SwaggerAPI
             string MacroCommand = @"{""MacroCommand"": 1}";
 
             HttpStatusCode status = PerformRequest(finalUrl, HttpMethod.Put, MacroCommand, out result);
+
+            if (status == HttpStatusCode.OK)
+                return true;
+            else
+                return false;
+        }
+
+        public bool UpdateReaderControl(int ReaderControl, string ReaderID)
+        {
+            string result;
+
+            List<string> urlBits = new List<string>() { "Readers", ReaderID, "ReaderControl" };
+
+            string finalUrl = String.Join("/", urlBits);
+            string body = @"{""ReaderCommand"":" + ReaderControl + ", \"DurationType\":0, \"TimeInMinutes\":0 }";
+
+            HttpStatusCode status = PerformRequest(finalUrl, HttpMethod.Put, body, out result);
 
             if (status == HttpStatusCode.OK)
                 return true;
