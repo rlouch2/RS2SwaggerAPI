@@ -19,22 +19,26 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Update version number in .csproj
-      run: |
-        VERSION=$(date +'%Y.%m.%d.%H%M')
-        sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" RS2SwaggerAPI/RS2SwaggerAPI.csproj
-
     - name: Restore dependencies
       run: 
         dotnet restore RS2SwaggerAPI/RS2SwaggerAPI.csproj
 
+    - name: Set version number to date/time
+      run: |
+        #ls RS2SwaggerAPI
+        echo "Setting version number"
+        VERSION=$(date +'%Y.%m.%d.%H%M')
+        cat RS2SwaggerAPI/RS2SwaggerAPI.csproj # View the updated 
+        sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" RS2SwaggerAPI/RS2SwaggerAPI.csproj
+        cat RS2SwaggerAPI/RS2SwaggerAPI.csproj # View the updated 
+        
     - name: Build
       run: 
         dotnet build RS2SwaggerAPI/RS2SwaggerAPI.csproj --configuration Release
 
     - name: Pack
       run: 
-        dotnet pack --configuration Release --output ./nupkgs
+        dotnet pack RS2SwaggerAPI/RS2SwaggerAPI.csproj --configuration Release --output ./nupkgs
 
     - name: Upload NuGet Packages
       uses: actions/upload-artifact@v4
@@ -42,7 +46,7 @@ jobs:
         name: nuget-packages
         path: ./nupkgs/*.nupkg
 
-    - name: Release
+    - name: Push nuget package to Github
       run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_GITHUB }} --source "https://nuget.pkg.github.com/rlouch2/index.json"
     #- name: Push to NuGet
     #  run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET }} --source https://api.nuget.org/v3/index.json
