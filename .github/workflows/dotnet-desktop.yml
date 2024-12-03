@@ -41,6 +41,8 @@ jobs:
       with:
         name: nuget-packages
         path: ./nupkgs/*.nupkg
-        
+
+    - name: Release
+      run: dotnet nuget add source --username rlouch2 --password ${{ secrets.NUGET_GITHUB }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/OWNER/index.json"
     #- name: Push to NuGet
     #  run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET }} --source https://api.nuget.org/v3/index.json
