@@ -25,6 +25,7 @@ jobs:
 
     - name: Set version number to date/time
       run: |
+        ls RS2SwaggerAPI
         VERSION=$(date +'%Y.%m.%d.%H%M')
         sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" RS2SwaggerAPI/RS2SwaggerAPI.csproj
         
