@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>RS2SwaggerAPI</id>
+    <version>1.0.0</version>
+    <authors>Ross Louch</authors>
+    <owners>Ross Louch</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>C# wrapper for the RS2 Swagger API</description>
+    <tags>tag1 tag2</tags>
+  </metadata>
+</package>
