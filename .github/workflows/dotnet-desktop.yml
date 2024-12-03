@@ -43,6 +43,6 @@ jobs:
         path: ./nupkgs/*.nupkg
 
     - name: Release
-      run: dotnet nuget add source --username rlouch2 --password ${{ secrets.NUGET_GITHUB }} --store-password-in-clear-text --name RS2SwaggerAPI "https://nuget.pkg.github.com/rlouch2/index.json"
+      run: dotnet nuget push ./nupkgs/*.nupkg --password ${{ secrets.NUGET_GITHUB }}  "https://nuget.pkg.github.com/rlouch2/index.json"
     #- name: Push to NuGet
     #  run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET }} --source https://api.nuget.org/v3/index.json
