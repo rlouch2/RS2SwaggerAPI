@@ -37,7 +37,7 @@ jobs:
         dotnet pack --configuration Release --output ./nupkgs
 
     - name: Upload NuGet Packages
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nuget-packages
         path: ./nupkgs/*.nupkg
