@@ -1,0 +1,36 @@
+name: Build and Package NuGet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Update version number in .csproj
+      run: |
+        VERSION=$(date +'%Y.%m.%d.%H%M')
+        sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" RS2SwaggerAPI.csproj
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release
+
+    - name: Pack
+      run: dotnet pack --configuration Release --output ./nupkgs
+
+    - name: Push to NuGet
+      run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
