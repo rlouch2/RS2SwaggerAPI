@@ -36,5 +36,11 @@ jobs:
       run: 
         dotnet pack --configuration Release --output ./nupkgs
 
+    - name: Upload NuGet Packages
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget-packages
+        path: ./nupkgs/*.nupkg
+        
     #- name: Push to NuGet
     #  run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET }} --source https://api.nuget.org/v3/index.json
