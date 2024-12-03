@@ -26,18 +26,15 @@ jobs:
 
     - name: Restore dependencies
       run: 
-        cd RS2SwaggerAPI      
-        dotnet restore
+        cd RS2SwaggerAPI && dotnet restore
 
     - name: Build
       run: 
-        cd RS2SwaggerAPI
-        dotnet build --configuration Release
+        cd RS2SwaggerAPI && dotnet build --configuration Release
 
     - name: Pack
       run: 
-        cd RS2SwaggerAPI
-        dotnet pack --configuration Release --output ./nupkgs
+        cd RS2SwaggerAPI && dotnet pack --configuration Release --output ./nupkgs
 
     #- name: Push to NuGet
     #  run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET }} --source https://api.nuget.org/v3/index.json
