@@ -19,15 +19,15 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Update version number in .csproj
-      run: |
-        VERSION=$(date +'%Y.%m.%d.%H%M')
-        sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" RS2SwaggerAPI/RS2SwaggerAPI.csproj
-
     - name: Restore dependencies
       run: 
         dotnet restore RS2SwaggerAPI/RS2SwaggerAPI.csproj
 
+    - name: Set version number to date/time
+      run: |
+        VERSION=$(date +'%Y.%m.%d.%H%M')
+        sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" RS2SwaggerAPI/RS2SwaggerAPI.csproj
+        
     - name: Build
       run: 
         dotnet build RS2SwaggerAPI/RS2SwaggerAPI.csproj --configuration Release
@@ -42,7 +42,7 @@ jobs:
         name: nuget-packages
         path: ./nupkgs/*.nupkg
 
-    - name: Release
-      run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_GITHUB }} --source "https://nuget.pkg.github.com/rlouch2/RS2SwaggerAPI/index.json"
+    - name: Push nuget package to Github
+      run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET_GITHUB }} --source "https://nuget.pkg.github.com/rlouch2/index.json"
     #- name: Push to NuGet
     #  run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ secrets.NUGET }} --source https://api.nuget.org/v3/index.json
