@@ -25,9 +25,12 @@ jobs:
 
     - name: Set version number to date/time
       run: |
-        ls RS2SwaggerAPI
+        #ls RS2SwaggerAPI
+        echo "Setting version number"
         VERSION=$(date +'%Y.%m.%d.%H%M')
+        cat RS2SwaggerAPI/RS2SwaggerAPI.csproj # View the updated 
         sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" RS2SwaggerAPI/RS2SwaggerAPI.csproj
+        cat RS2SwaggerAPI/RS2SwaggerAPI.csproj # View the updated 
         
     - name: Build
       run: 
