@@ -1,3 +1,5 @@
+using System.Linq;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace RS2SwaggerAPI_Tests
@@ -56,6 +58,21 @@ namespace RS2SwaggerAPI_Tests
 
 			blankUser.LastName = "Shredding";
 			blankUser.FirstName = "PaperTiger";
+
+		}
+
+		[Test]
+		public void RemoveArrayObject()
+		{
+			RS2SwaggerAPI.RS2_ws ws = new RS2SwaggerAPI.RS2_ws(RS2_URL, RS2_UserName, RS2_Password, RS2_PublicKey);
+			dynamic cardholders = ws.Select("Cardholders", new RS2SwaggerAPI.Criteria("CardholderId", "e31b3621-abba-401c-9754-eb5f79860c30"), true);
+
+			dynamic cardholder = cardholders[0];
+			var accessLevels = (JArray)cardholder.CardholderAccessLevels;
+			foreach (dynamic AccessLevel in accessLevels.ToList())
+			{
+				cardholder.CardholderAccessLevels.Remove(AccessLevel);
+			}
 
 		}
 	}

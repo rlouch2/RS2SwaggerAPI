@@ -82,42 +82,40 @@ namespace RS2SwaggerAPI
 			//return m_element.Elements(name).Any();
 		}
 
-		public override bool TryGetMember(GetMemberBinder binder, out object result)
-		{
-			//int count = m_token[binder.Name].Parent.Count();
+public override bool TryGetMember(GetMemberBinder binder, out object result)
+{
+    result = null;
 
-			result = null;
-			//if (m_token[binder.Name].Any())
-			//{
-			switch (m_token[binder.Name].Type)
-			{
-				case JTokenType.Object:
-					if (m_token[binder.Name].HasValues)
-					{
-						result = m_token[binder.Name];
-					}
-					else
-						result = m_token[binder.Name].ToString();
+    var obj = m_token as JObject;
+    if (obj == null)
+        return false;
 
-					break;
-				case JTokenType.Array:
-					JArray ary = JArray.Parse(m_token[binder.Name].ToString());
+    var t = obj[binder.Name];
+    if (t == null)
+        return false;
 
-					result = ary;
-					break;
-				case JTokenType.String:
-					result = m_token[binder.Name].ToString();
-					break;
-				default:
-					result = m_token[binder.Name];
-					break;
-			}
-			//}
-			//else
-			//	result = null;
+    switch (t.Type)
+    {
+        case JTokenType.Array:
+        case JTokenType.Object:
+            result = t;                 // return the real JToken/JArray/JObject
+            break;
 
-			return true;
-		}
+        case JTokenType.String:
+        case JTokenType.Integer:
+        case JTokenType.Float:
+        case JTokenType.Boolean:
+        case JTokenType.Null:
+            result = (t as JValue)?.Value;  // unwrap scalars
+            break;
+
+        default:
+            result = t;                 // safe default: return the token
+            break;
+    }
+
+    return true;
+}
 
 		public override bool TrySetMember(SetMemberBinder binder, object value)
 		{
