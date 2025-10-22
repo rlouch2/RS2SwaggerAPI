@@ -173,6 +173,24 @@ namespace RS2SwaggerAPI
 
 		}
 
+public void RemoveWhere(Func<JToken, bool> predicate)
+    {
+        var array = m_token as JArray ?? m_token.Children().OfType<JArray>().FirstOrDefault();
+        if (array == null)
+            return;
+
+        foreach (var item in array.ToList())
+        {
+            if (predicate(item))
+                item.Remove();
+        }
+    }
+
+		public void Remove(JToken token)
+		{
+			token?.Remove();
+		}
+
 		public void SetDefaultValues(string value = null)
 		{
 			foreach (JProperty prop in m_token.Children())
