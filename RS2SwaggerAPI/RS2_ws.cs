@@ -248,6 +248,27 @@ namespace RS2SwaggerAPI
             else
                 return false;
         }
+
+
+        public bool ReplaceCardholderAccessLevels(object Record)
+        {
+            if (((List<object>)Record).Count > 6)
+                throw new InvalidOperationException(
+                    $"Cannot update CardholderAccessLevels. Maximum allowed is 6 but received {((List<object>)Record).Count}.");
+
+
+            string url = "CardholderAccessLevels";
+            string result;
+
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(Record, Formatting.Indented);
+
+            HttpStatusCode status = PerformRequest(url, HttpMethod.Put, json, out result);
+
+            if (status == HttpStatusCode.OK)
+                return true;
+            else
+                return false;
+        }
         #endregion
 
 
