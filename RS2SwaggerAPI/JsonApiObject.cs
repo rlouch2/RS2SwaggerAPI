@@ -11,296 +11,296 @@ using System.Dynamic;
 
 namespace RS2SwaggerAPI
 {
-	//public class JsonApiObjectList
-	//{
-	//	public List<JsonApiObject> JsonApiObject { get; set; }
-	//}
+    //public class JsonApiObjectList
+    //{
+    //	public List<JsonApiObject> JsonApiObject { get; set; }
+    //}
 
-	public class JsonApiObject : DynamicObject
-	{
-		#region Declarations
-
-		//[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private JToken m_token;
-
-		#endregion Declarations
-
-		#region Properties
-
-		/// <summary>
-		/// Gets the name of the source table for the record that this object represents
-		/// </summary>
-		public string Table { get; set; }
-
-		//public int ColumnCount
-		//{
-		//	get
-		//	{
-		//		return ((JObject)m_token).Properties().Count();
-		//	}
-		//}
-
-		//public Dictionary<string, string> Columns
-		//{
-		//	get
-		//	{
-		//		Dictionary<string, string> values = new Dictionary<string, string>();
-		//		foreach (string col in GetDynamicMemberNames())
-		//		{
-		//			values.Add(col, m_token[col].ToString());
-		//		}
-
-		//		return values;
-		//	}
-		//}
-
-		#endregion Properties
-
-		#region Constructor
-
-		internal JsonApiObject(JToken token, string tableName)
-		{
-			if (token == null) throw new ArgumentNullException("token");
-			Table = tableName;
-			m_token = token;
-		}
-
-		public JsonApiObject() { }
-
-		#endregion Constructor
-
-		#region DynamicObject Overrides
-
-		/// <summary>
-		/// Determines whether the specified field exists in this object.
-		/// </summary>
-		/// <param name="name">The name.</param>
-		/// <returns></returns>
-		public bool HasField(string name)
-		{
-			return m_token[name].Any();
-			//return m_element.Elements(name).Any();
-		}
-
-public override bool TryGetMember(GetMemberBinder binder, out object result)
-{
-    result = null;
-
-    var obj = m_token as JObject;
-    if (obj == null)
-        return false;
-
-    var t = obj[binder.Name];
-    if (t == null)
-        return false;
-
-    switch (t.Type)
+    public class JsonApiObject : DynamicObject
     {
-        case JTokenType.Array:
-        case JTokenType.Object:
-            result = t;                 // return the real JToken/JArray/JObject
-            break;
+        #region Declarations
 
-        case JTokenType.String:
-        case JTokenType.Integer:
-        case JTokenType.Float:
-        case JTokenType.Boolean:
-        case JTokenType.Null:
-            result = (t as JValue)?.Value;  // unwrap scalars
-            break;
+        //[DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private JToken m_token;
 
-        default:
-            result = t;                 // safe default: return the token
-            break;
-    }
+        #endregion Declarations
 
-    return true;
-}
+        #region Properties
 
-		public override bool TrySetMember(SetMemberBinder binder, object value)
-		{
-			m_token[binder.Name] = JToken.FromObject(value);
+        /// <summary>
+        /// Gets the name of the source table for the record that this object represents
+        /// </summary>
+        public string Table { get; set; }
 
+        //public int ColumnCount
+        //{
+        //	get
+        //	{
+        //		return ((JObject)m_token).Properties().Count();
+        //	}
+        //}
 
-			//switch (m_token[binder.Name].Type)
-			//{
-			//	case JTokenType.Object:
-			//		if (m_token[binder.Name].HasValues)
-			//		{
-			//			result = m_token[binder.Name];
-			//		}
-			//		else
-			//			result = m_token[binder.Name].ToString();
+        //public Dictionary<string, string> Columns
+        //{
+        //	get
+        //	{
+        //		Dictionary<string, string> values = new Dictionary<string, string>();
+        //		foreach (string col in GetDynamicMemberNames())
+        //		{
+        //			values.Add(col, m_token[col].ToString());
+        //		}
 
-			//		break;
-			//	case JTokenType.Array:
-			//		break;
-			//	case JTokenType.String:
-			//		m_token[binder.Name] = (string)value;
-			//		break;
-			//	default:
-			//		m_token[binder.Name] = value;
-			//		break;
-			//}
+        //		return values;
+        //	}
+        //}
 
+        #endregion Properties
 
-			//m_token[binder.Name] = (string)value;
-			return true;
+        #region Constructor
 
-			//return base.TrySetMember(binder, value);
-		}
-
-		public override IEnumerable<string> GetDynamicMemberNames()
-		{
-			return ((JObject)m_token).Properties().Select(p => p.Name.ToString()).ToList();
-		}
-
-		#endregion DynamicObject Overrides
-
-		private void UpdateValue(string name, object value)
-		{
-			m_token[name] = (string)value;
-		}
-
-		#region Methods
-
-		public void Remove(string Name)
-		{
-			m_token[Name].Parent.Remove();
-
-
-		}
-
-public void RemoveWhere(Func<JToken, bool> predicate)
-    {
-        var array = m_token as JArray ?? m_token.Children().OfType<JArray>().FirstOrDefault();
-        if (array == null)
-            return;
-
-        foreach (var item in array.ToList())
+        internal JsonApiObject(JToken token, string tableName)
         {
-            if (predicate(item))
-                item.Remove();
+            if (token == null) throw new ArgumentNullException("token");
+            Table = tableName;
+            m_token = token;
         }
+
+        public JsonApiObject() { }
+
+        #endregion Constructor
+
+        #region DynamicObject Overrides
+
+        /// <summary>
+        /// Determines whether the specified field exists in this object.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
+        public bool HasField(string name)
+        {
+            return m_token[name].Any();
+            //return m_element.Elements(name).Any();
+        }
+
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
+        {
+            result = null;
+
+            var obj = m_token as JObject;
+            if (obj == null)
+                return false;
+
+            var t = obj[binder.Name];
+            if (t == null)
+                return false;
+
+            switch (t.Type)
+            {
+                case JTokenType.Array:
+                case JTokenType.Object:
+                    result = t;                 // return the real JToken/JArray/JObject
+                    break;
+
+                case JTokenType.String:
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                case JTokenType.Boolean:
+                case JTokenType.Null:
+                    result = (t as JValue)?.Value;  // unwrap scalars
+                    break;
+
+                default:
+                    result = t;                 // safe default: return the token
+                    break;
+            }
+
+            return true;
+        }
+
+        public override bool TrySetMember(SetMemberBinder binder, object value)
+        {
+            m_token[binder.Name] = JToken.FromObject(value);
+
+
+            //switch (m_token[binder.Name].Type)
+            //{
+            //	case JTokenType.Object:
+            //		if (m_token[binder.Name].HasValues)
+            //		{
+            //			result = m_token[binder.Name];
+            //		}
+            //		else
+            //			result = m_token[binder.Name].ToString();
+
+            //		break;
+            //	case JTokenType.Array:
+            //		break;
+            //	case JTokenType.String:
+            //		m_token[binder.Name] = (string)value;
+            //		break;
+            //	default:
+            //		m_token[binder.Name] = value;
+            //		break;
+            //}
+
+
+            //m_token[binder.Name] = (string)value;
+            return true;
+
+            //return base.TrySetMember(binder, value);
+        }
+
+        public override IEnumerable<string> GetDynamicMemberNames()
+        {
+            return ((JObject)m_token).Properties().Select(p => p.Name.ToString()).ToList();
+        }
+
+        #endregion DynamicObject Overrides
+
+        private void UpdateValue(string name, object value)
+        {
+            m_token[name] = (string)value;
+        }
+
+        #region Methods
+
+        public void Remove(string Name)
+        {
+            m_token[Name].Parent.Remove();
+
+
+        }
+
+        public void RemoveWhere(Func<JToken, bool> predicate)
+        {
+            var array = m_token as JArray ?? m_token.Children().OfType<JArray>().FirstOrDefault();
+            if (array == null)
+                return;
+
+            foreach (var item in array.ToList())
+            {
+                if (predicate(item))
+                    item.Remove();
+            }
+        }
+
+        public void Remove(JToken token)
+        {
+            token?.Remove();
+        }
+
+        public void SetDefaultValues(string value = null)
+        {
+            foreach (JProperty prop in m_token.Children())
+            {
+                switch (m_token[prop.Name].Type)
+                {
+                    case JTokenType.Object:
+                        if (m_token[prop.Name].HasValues)
+                        {
+                            foreach (JProperty subproperty in m_token[prop.Name].Children())
+                                subproperty.Value = new JValue(value);
+                        }
+                        else
+                            prop.Value = new JValue(value);
+
+                        break;
+                    case JTokenType.Array:
+                        JArray ary = JArray.Parse(m_token[prop.Name].ToString());
+                        //if (ary.Children().Count() >= 1)
+                        for (int i = ary.Children().Count() - 1; i >= 1; i--)
+                            ary.RemoveAt(i);
+
+                        if (ary.Count() > 0)
+                            foreach (JProperty subprop in ary[0])
+                                subprop.Value = new JValue(value);
+
+                        m_token[prop.Name] = ary;
+                        break;
+                    default:
+                        prop.Value = new JValue(value);
+                        break;
+                }
+            }
+        }
+
+        public void SetDefaultValues(string property, string value = null)
+        {
+            foreach (JProperty prop in m_token[property])
+            {
+                switch (m_token[prop.Name].Type)
+                {
+                    case JTokenType.Object:
+                        if (m_token[prop.Name].HasValues)
+                        {
+                            foreach (JProperty subProperty in m_token[prop.Name].Children())
+                            {
+                                SetDefaultValues(prop.Name, value);
+                            }
+                        }
+                        else
+                            prop.Value = new JValue(value);
+                        break;
+
+                    case JTokenType.Array:
+                        JArray ary = JArray.Parse(m_token[prop.Name].ToString());
+                        if (ary.Children().Count() >= 1)
+                            for (int i = ary.Children().Count(); i <= 1; i--)
+                                ary.RemoveAt(i);
+
+                        m_token[prop.Name] = ary;
+                        SetDefaultValues(prop.Name, value);
+
+                        break;
+                    default:
+                        prop.Value = new JValue(value);
+                        break;
+                }
+
+
+
+
+                prop.Value = new JValue(value);
+            }
+        }
+
+        public void Update(string name, string value = null)
+        {
+            //switch (m_token[name].Type)
+            //{
+            //	case JTokenType.Object:
+            //		if (m_token[name].HasValues)
+            //		{
+            //			foreach (JToken child in m_token[name].Children())
+            //			{
+            //				m_token[name].Children() = value;
+            //			}
+            //		}
+            //		else
+            //			result = m_token[name].ToString();
+
+            //		break;
+            //	case JTokenType.Array:
+            //		m_token[name] = value;
+
+
+            //		break;
+            //	case JTokenType.String:
+            //		result = m_token[name].ToString();
+            //		break;
+            //	default:
+            //		result = m_token[name];
+            //		break;
+            //}
+
+
+
+            if (((JObject)m_token).ContainsKey(name))
+            {
+                m_token[name] = value;
+            }
+        }
+
+        #endregion Methods
     }
-
-		public void Remove(JToken token)
-		{
-			token?.Remove();
-		}
-
-		public void SetDefaultValues(string value = null)
-		{
-			foreach (JProperty prop in m_token.Children())
-			{
-				switch (m_token[prop.Name].Type)
-				{
-					case JTokenType.Object:
-						if (m_token[prop.Name].HasValues)
-						{
-							foreach (JProperty subproperty in m_token[prop.Name].Children())
-								subproperty.Value = new JValue(value);
-						}
-						else
-							prop.Value = new JValue(value);
-
-						break;
-					case JTokenType.Array:
-						JArray ary = JArray.Parse(m_token[prop.Name].ToString());
-						//if (ary.Children().Count() >= 1)
-						for (int i = ary.Children().Count() - 1; i >= 1; i--)
-							ary.RemoveAt(i);
-
-						if (ary.Count() > 0)
-							foreach (JProperty subprop in ary[0])
-								subprop.Value = new JValue(value);
-
-						m_token[prop.Name] = ary;
-						break;
-					default:
-						prop.Value = new JValue(value);
-						break;
-				}
-			}
-		}
-
-		public void SetDefaultValues(string property, string value = null)
-		{
-			foreach (JProperty prop in m_token[property])
-			{
-				switch (m_token[prop.Name].Type)
-				{
-					case JTokenType.Object:
-						if (m_token[prop.Name].HasValues)
-						{
-							foreach (JProperty subProperty in m_token[prop.Name].Children())
-							{
-								SetDefaultValues(prop.Name, value);
-							}
-						}
-						else
-							prop.Value = new JValue(value);
-						break;
-
-					case JTokenType.Array:
-						JArray ary = JArray.Parse(m_token[prop.Name].ToString());
-						if (ary.Children().Count() >= 1)
-							for (int i = ary.Children().Count(); i <= 1; i--)
-								ary.RemoveAt(i);
-
-						m_token[prop.Name] = ary;
-						SetDefaultValues(prop.Name, value);
-
-						break;
-					default:
-						prop.Value = new JValue(value);
-						break;
-				}
-
-
-
-
-				prop.Value = new JValue(value);
-			}
-		}
-
-		public void Update(string name, string value = null)
-		{
-			//switch (m_token[name].Type)
-			//{
-			//	case JTokenType.Object:
-			//		if (m_token[name].HasValues)
-			//		{
-			//			foreach (JToken child in m_token[name].Children())
-			//			{
-			//				m_token[name].Children() = value;
-			//			}
-			//		}
-			//		else
-			//			result = m_token[name].ToString();
-
-			//		break;
-			//	case JTokenType.Array:
-			//		m_token[name] = value;
-
-
-			//		break;
-			//	case JTokenType.String:
-			//		result = m_token[name].ToString();
-			//		break;
-			//	default:
-			//		result = m_token[name];
-			//		break;
-			//}
-
-
-
-			if (((JObject)m_token).ContainsKey(name))
-			{
-				m_token[name] = value;
-			}
-		}
-
-		#endregion Methods
-	}
 }
